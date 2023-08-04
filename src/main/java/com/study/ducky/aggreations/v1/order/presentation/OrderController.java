@@ -1,8 +1,6 @@
 package com.study.ducky.aggreations.v1.order.presentation;
 
-import com.study.ducky.config.annotations.Get;
-import com.study.ducky.config.annotations.Post;
-import com.study.ducky.config.annotations.RestApi;
+import com.study.ducky.config.annotations.*;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +31,16 @@ public class OrderController {
 
     @Post
     public List<String> createOrders(@Valid  @RequestBody List<String> payload) {
+        return payload;
+    }
+
+    @Put
+    public void putOrders(@Valid  @RequestBody List<String> payload) {
         System.out.println(payload);
-        return payload;}
+    }
+
+    @Delete
+    public void deleteOrders(@Valid  @RequestBody List<String> payload) {
+        System.out.println(payload);
+    }
 }
