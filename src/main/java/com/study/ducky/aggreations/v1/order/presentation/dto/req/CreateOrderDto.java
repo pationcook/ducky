@@ -1,8 +1,11 @@
-package com.study.ducky.aggreations.v1.order.presentation.dto;
+package com.study.ducky.aggreations.v1.order.presentation.dto.req;
 
+import jakarta.validation.Valid;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+
+import java.util.List;
 
 /**
  * packageName    : com.study.ducky.aggreations.v1.order.presentation.dto
@@ -23,4 +26,8 @@ public class CreateOrderDto {
     private int isTaxation;
     @NonNull
     private String address;
+
+    @Valid
+    @NonNull
+    private List<CreateOrderItemDto> items;
 }

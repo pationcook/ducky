@@ -1,9 +1,9 @@
 package com.study.ducky.aggreations.v1.order.presentation;
 
+import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrderDto;
 import com.study.ducky.config.annotations.*;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -30,8 +30,11 @@ public class OrderController {
 
 
     @Post
-    public List<String> createOrders(@Valid  @RequestBody List<String> payload) {
-        return payload;
+    public Long createOrders(
+            // 해당 객체에 대한 validation 검사를 하라고 명시하는 것. @valid
+            @Valid
+            @RequestBody CreateOrderDto payload) {
+        return 0L;
     }
 
     @Put
