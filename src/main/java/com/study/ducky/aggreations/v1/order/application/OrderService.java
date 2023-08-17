@@ -4,7 +4,11 @@ import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
 import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * packageName    : com.study.ducky.aggreations.v1.order.application
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     
     // setter 주입법  -  순환참조 걸릴 수 있다.
@@ -29,7 +34,15 @@ public class OrderService {
                 .build()
                 .patch(createOrder)
                 .create(orderRepository);
-
         orderRepository.save(orderAggregate);
+    }
+
+    public void creates(List<CreateOrder> createOrders){
+        List<OrderAggregate> orderAggregates = createOrders.stream()
+                .map(createOrder -> OrderAggregate.builder()
+                        .build()
+                        .patch(createOrder))
+                .collect(Collectors.toList());
+        orderRepository.saveAll(orderAggregates);
     }
 }

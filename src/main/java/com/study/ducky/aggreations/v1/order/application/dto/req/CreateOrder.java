@@ -1,7 +1,9 @@
 package com.study.ducky.aggreations.v1.order.application.dto.req;
 
+import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrdersDto;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * packageName    : com.study.ducky.aggreations.v1.order.application.dto.req
@@ -16,6 +18,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter
+@ToString
 public class CreateOrder {
     private String orderNumber;
     private String orderName;
@@ -24,4 +27,7 @@ public class CreateOrder {
     private int deliveryFee;
     private String address;
     private Long userId;
+
+
+
 }

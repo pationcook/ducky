@@ -2,11 +2,14 @@ package com.study.ducky.aggreations.v1.order.presentation;
 
 import com.study.ducky.aggreations.v1.order.application.OrderService;
 import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrderDto;
+import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrdersDto;
 import com.study.ducky.config.annotations.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -24,6 +27,7 @@ import java.util.List;
  */
 @RestApi("/v1/orders")
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
 
 
@@ -36,12 +40,21 @@ public class OrderController {
 
 
 
+//    @Post
+//    public Long createOrders(
+//            // 해당 객체에 대한 validation 검사를 하라고 명시하는 것. @valid
+//            @Valid
+//            @RequestBody CreateOrderDto payload) {
+//        orderService.create(payload.toCreate());
+//        return 0L;
+//    }
     @Post
     public Long createOrders(
             // 해당 객체에 대한 validation 검사를 하라고 명시하는 것. @valid
             @Valid
-            @RequestBody CreateOrderDto payload) {
-        orderService.create(payload.toCreate());
+            @RequestBody CreateOrdersDto payload) throws Exception{
+        log.info(payload.toString());
+        orderService.creates(payload.toCreate());
         return 0L;
     }
 
