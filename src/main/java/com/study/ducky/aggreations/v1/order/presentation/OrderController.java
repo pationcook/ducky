@@ -1,8 +1,10 @@
 package com.study.ducky.aggreations.v1.order.presentation;
 
+import com.study.ducky.aggreations.v1.order.application.OrderService;
 import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrderDto;
 import com.study.ducky.config.annotations.*;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -21,7 +23,11 @@ import java.util.List;
  * 2023-07-29           patio            최초 생성
  */
 @RestApi("/v1/orders")
+@RequiredArgsConstructor
 public class OrderController {
+
+
+    private final OrderService orderService;
 
     @Get
     public List<String> getOrders(){
@@ -29,11 +35,13 @@ public class OrderController {
     }
 
 
+
     @Post
     public Long createOrders(
             // 해당 객체에 대한 validation 검사를 하라고 명시하는 것. @valid
             @Valid
             @RequestBody CreateOrderDto payload) {
+        orderService.create(payload.toCreate());
         return 0L;
     }
 
