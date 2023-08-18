@@ -37,12 +37,13 @@ public class OrderService {
         orderRepository.save(orderAggregate);
     }
 
-    public void creates(List<CreateOrder> createOrders){
+    public List<CreateOrder> creates(List<CreateOrder> createOrders){
         List<OrderAggregate> orderAggregates = createOrders.stream()
                 .map(createOrder -> OrderAggregate.builder()
                         .build()
                         .patch(createOrder))
                 .collect(Collectors.toList());
         orderRepository.saveAll(orderAggregates);
+        return createOrders;
     }
 }
