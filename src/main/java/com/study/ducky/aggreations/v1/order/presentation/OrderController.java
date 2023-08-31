@@ -2,9 +2,7 @@ package com.study.ducky.aggreations.v1.order.presentation;
 
 import com.study.ducky.aggreations.v1.order.application.OrderService;
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
-import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrderDto;
 import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrdersDto;
-import com.study.ducky.aggreations.v1.order.presentation.dto.req.Result;
 import com.study.ducky.config.annotations.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -67,7 +64,8 @@ public class OrderController {
             List<Long> result = orderService.creates(list);
             return ResponseEntity.ok(result);
         } catch ( Exception e) {
-            return ResponseEntity.internalServerError().body(Result.builder().message("중복 건수 :" + duplicateCount));
+//            return ResponseEntity.internalServerError().body(Result.builder().message("중복 건수 :" + duplicateCount));
+            throw new Exception();
         }
     }
 

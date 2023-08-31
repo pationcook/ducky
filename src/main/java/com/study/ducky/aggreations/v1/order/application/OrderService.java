@@ -3,16 +3,12 @@ package com.study.ducky.aggreations.v1.order.application;
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
 import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.OrderRepository;
-import com.study.ducky.aggreations.v1.order.presentation.dto.req.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
