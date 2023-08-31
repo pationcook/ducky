@@ -3,11 +3,13 @@ package com.study.ducky.aggreations.v1.order.presentation.dto.req;
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * packageName    : com.study.ducky.aggreations.v1.order.presentation.dto
@@ -43,10 +45,15 @@ public class CreateOrderDto {
                 .deliveryFee(this.deliveryFee)
                 .address(this.address)
                 .userId(this.userId)
+                .items(this.items.stream()
+                        .map(CreateOrderItemDto::toCreate)
+                        .collect(Collectors.toList())
+                )
                 .build();
     }
 
-//    @NotNull
-//    @Valid
-//    private List<CreateOrderItemDto> items;
+    @NotNull
+    @Size(min = 1)
+    @Valid     // valid는 내 하위의 객체만 체크한다.
+    private List<CreateOrderItemDto> items;
 }

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 /**
  * packageName    : com.study.ducky.aggreations.v1.order.application.dto.req
  * fileName       : CreateOrder
@@ -27,6 +29,7 @@ public class CreateOrder {
     private int deliveryFee;
     private String address;
     private Long userId;
+    private List<CreateOrderItem> items;
 
 
 

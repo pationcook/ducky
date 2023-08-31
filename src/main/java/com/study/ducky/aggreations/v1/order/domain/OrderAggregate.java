@@ -1,8 +1,8 @@
 package com.study.ducky.aggreations.v1.order.domain;
 
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
+import com.study.ducky.aggreations.v1.order.enums.OrderStatusEnum;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.OrderRepository;
-import com.study.ducky.config.annotations.Get;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +38,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class OrderAggregate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,13 +46,21 @@ public class OrderAggregate {
 
     private String orderNumber;
     private String orderName;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatusEnum status;
     private int price;
     private int deliveryFee;
     private String address;
     private long userId;
+
+    @CreatedDate
     private LocalDateTime createdDate;
+
+    @LastModifiedDate
     private LocalDateTime updatedDate;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<OrderItemEntity> orderItems;
 
     public OrderAggregate create(OrderRepository orderRepository) {
         orderRepository.save(this);
@@ -62,6 +75,19 @@ public class OrderAggregate {
         this.address = StringUtils.defaultIfEmpty(createOrder.getOrderNumber(), this.address);
         this.userId = createOrder.getUserId();
         this.createdDate = LocalDateTime.now();
+        createOrder.getItems().forEach(item -> this.addItem(OrderItemEntity.builder()
+                .build()
+                .patch(item)));
+        return this;
+    }
+
+    public OrderAggregate addItem(OrderItemEntity orderItem){
+        Assert.notNull(orderItem, "OrderItem is null");
+        if(this.getOrderItems() == null) {
+            this.orderItems = new ArrayList<>();
+        }
+        orderItem.putOrder(this);
+        this.orderItems.add(orderItem);
         return this;
     }
 }

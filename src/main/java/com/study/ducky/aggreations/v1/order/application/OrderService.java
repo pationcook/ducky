@@ -3,11 +3,16 @@ package com.study.ducky.aggreations.v1.order.application;
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
 import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.OrderRepository;
+import com.study.ducky.aggreations.v1.order.presentation.dto.req.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -37,13 +42,21 @@ public class OrderService {
         orderRepository.save(orderAggregate);
     }
 
-    public List<CreateOrder> creates(List<CreateOrder> createOrders){
+    public int duplicateByUserId(List<CreateOrder> createOrders){
+        Example<List<CreateOrder>> example = (Example<List<CreateOrder>>) createOrders;
+//        return orderRepository.find;
+        return 0;
+    }
+
+    public List<Long> creates(List<CreateOrder> createOrders) {
         List<OrderAggregate> orderAggregates = createOrders.stream()
                 .map(createOrder -> OrderAggregate.builder()
                         .build()
                         .patch(createOrder))
                 .collect(Collectors.toList());
-        orderRepository.saveAll(orderAggregates);
-        return createOrders;
+            orderRepository.saveAll(orderAggregates);
+            return orderAggregates.stream()
+                    .map(OrderAggregate::getId)
+                    .toList();
     }
 }

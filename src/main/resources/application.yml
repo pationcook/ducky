@@ -31,4 +31,10 @@ spring:
       hibernate:
         query.in_clause_parameter_padding: true
         show_sql: true
-        format_sql: true
+        format_sql:
+logging:
+  level:
+    org:
+      hibernate:
+        orm.jdbc.bind: trace # hibernate core 6.x
+        #type.descriptor.sql.BasicBinder: trace # hibernate core 5.x
