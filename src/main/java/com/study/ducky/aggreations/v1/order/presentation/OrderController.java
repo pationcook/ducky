@@ -2,16 +2,27 @@ package com.study.ducky.aggreations.v1.order.presentation;
 
 import com.study.ducky.aggreations.v1.order.application.OrderService;
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
+import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
+import com.study.ducky.aggreations.v1.order.domain.OrderItemEntity;
+import com.study.ducky.aggreations.v1.order.enums.OrderStatusEnum;
 import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrdersDto;
+import com.study.ducky.aggreations.v1.order.presentation.dto.res.OrderDto;
 import com.study.ducky.config.annotations.*;
+import com.study.ducky.config.mapstruct.mapper.OrderEntityDtoMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 
 /**
@@ -33,9 +44,20 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Get
-    public List<String> getOrders(){
-        return List.of("A","B","C");
+    private final OrderEntityDtoMapper orderEntityDtoMapper;
+
+    @Get("/status/{status}")
+    public Page<OrderDto> getOrders(
+            @PathVariable OrderStatusEnum status,
+            @PageableDefault(size= 10, sort="id", direction=Sort.Direction.DESC) Pageable pageable
+            ){
+        Page<OrderAggregate> pageOrders = orderService.listByStatus(status ,pageable);
+        List<OrderAggregate> orders = pageOrders.getContent();
+        // jpa 는 null 이 존재하지 않는다. => 빈리스트
+        List<OrderDto> orderDtos = orders.stream()
+                .map(order -> orderEntityDtoMapper.toDto(order))
+                .collect(Collectors.toList());
+        return new PageImpl<>(orderDtos, pageable, pageOrders.getTotalElements());
     }
 
 
@@ -66,7 +88,50 @@ public class OrderController {
         } catch ( Exception e) {
 //            return ResponseEntity.internalServerError().body(Result.builder().message("중복 건수 :" + duplicateCount));
             throw new Exception();
+
         }
+    }
+
+    @Get("/{id}")
+    public OrderDto getOrder(@PathVariable long id) {
+        OrderAggregate orderAggregate = getOrderAggregate(id);
+
+        List<OrderItemEntity> items = orderAggregate.getOrderItems();
+
+
+        OrderDto orderDto = orderEntityDtoMapper.toDto(orderAggregate);
+        // 아이템즈를 재조회하는 이유는 이 지랄을 해야 조회가 됨.
+//        final List<OrderItemDto> itemDtos = items.stream().map(item ->
+//                OrderItemDto.builder()
+//                        .id(item.getId())
+//                        .itemId(item.getItemId())
+//                        .itemName(item.getItemName())
+//                        .status(item.getStatus())
+//                        .price(item.getPrice())
+//                        .qty(item.getQty())
+//                        .createdDate(item.getCreatedDate())
+//                        .updatedDate(item.getUpdatedDate())
+//                        .build())
+//                .collect(Collectors.toList());
+//
+//        return OrderDto.builder()
+//                .id(orderAggregate.getId())
+//                .orderNumber(orderAggregate.getOrderNumber())
+//                .orderName(orderAggregate.getOrderNumber())
+//                .status(orderAggregate.getStatus())
+//                .price(orderAggregate.getPrice())
+//                .deliveryFee(orderAggregate.getDeliveryFee())
+//                .address(orderAggregate.getAddress())
+//                .userId(orderAggregate.getUserId())
+//                .updatedDate(orderAggregate.getUpdatedDate())
+//                .createdDate(orderAggregate.getCreatedDate())
+//                .orderItemDto(itemDtos)
+//                .build();
+        return orderDto;
+    }
+
+    private OrderAggregate getOrderAggregate(long id) {
+        return orderService.get(id);
     }
 
     @Put

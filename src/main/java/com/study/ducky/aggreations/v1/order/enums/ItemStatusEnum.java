@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public enum ItemStatusEnum {
     SELL("팔기"),
-    STOP("안팔기?중단?");
+    STOP("취소");
 
     private String status;
 

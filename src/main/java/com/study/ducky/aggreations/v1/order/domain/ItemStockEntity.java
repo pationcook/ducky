@@ -1,6 +1,7 @@
 package com.study.ducky.aggreations.v1.order.domain;
 
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateItemStock;
+import com.study.ducky.config.mapstruct.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +33,7 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class ItemStockEntity {
+public class ItemStockEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,7 +47,7 @@ public class ItemStockEntity {
     private LocalDateTime updatedDate;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="itemId")
     private ItemAggregate item;
 

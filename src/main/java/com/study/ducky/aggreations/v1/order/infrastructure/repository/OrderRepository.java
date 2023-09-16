@@ -2,6 +2,9 @@ package com.study.ducky.aggreations.v1.order.infrastructure.repository;
 
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
 import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
+import com.study.ducky.aggreations.v1.order.enums.OrderStatusEnum;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +25,6 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<OrderAggregate, Long> {
 
 //    List<OrderAggregate> findAllByUserId(List<Long> userIds);
+
+    Page<OrderAggregate> findAllByStatus(OrderStatusEnum orderStatusEnum, Pageable pageable);
 }

@@ -3,11 +3,13 @@ package com.study.ducky.aggreations.v1.order.domain;
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
 import com.study.ducky.aggreations.v1.order.enums.OrderStatusEnum;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.OrderRepository;
+import com.study.ducky.config.mapstruct.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
@@ -33,13 +35,13 @@ import java.util.List;
  */
 @Table(catalog = "base", name = "order")
 @Entity
-@Builder
+@SuperBuilder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
-public class OrderAggregate {
+public class OrderAggregate extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

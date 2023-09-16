@@ -27,18 +27,20 @@ import java.util.stream.Collectors;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateItemDto {
     @NonNull
-    String itemName;
+    private String itemName;
 
     @Enumerated(EnumType.STRING)
-    ItemStatusEnum status;
+    private ItemStatusEnum status;
     @PositiveOrZero
-    int price;
+    private int price;
     @NotNull
     @Size(min = 1)
     @Valid     // valid 는 내 하위의 객체만 체크한다.
-    private List<CreateItemStockDto> items;
+    private List<CreateItemStockDto> stocks;
 
 
     public CreateItem toCreate() {
@@ -46,10 +48,11 @@ public class CreateItemDto {
                 .itemName(this.itemName)
                 .status(this.status)
                 .price(this.price)
-                .items(this.items.stream()
+                .items(this.stocks.stream()
                         .map(CreateItemStockDto::toCreate)
                         .collect(Collectors.toList())
                 )
                 .build();
     }
+
 }

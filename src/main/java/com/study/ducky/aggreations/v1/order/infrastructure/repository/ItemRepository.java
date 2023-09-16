@@ -17,4 +17,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ItemRepository extends JpaRepository<ItemAggregate, Long> {
+    // simple jpaRepo에서 구현부 제공.
+    // sql => jpql 로 동작. ->  문법이 조금 다름.
+    // jpql은 sql과 같은놈이나 객체로 접근이 가능하다.
+    // Optional<ENTITY>  해당 객체에 옵션여부 체크.
 }

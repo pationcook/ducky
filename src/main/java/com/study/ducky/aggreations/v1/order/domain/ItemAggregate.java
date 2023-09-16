@@ -1,14 +1,15 @@
 package com.study.ducky.aggreations.v1.order.domain;
 
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateItem;
-import com.study.ducky.aggreations.v1.order.application.dto.req.CreateItemStock;
 import com.study.ducky.aggreations.v1.order.enums.ItemStatusEnum;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.ItemRepository;
+import com.study.ducky.config.mapstruct.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,13 +35,13 @@ import java.util.stream.Collectors;
  */
 @Table(catalog = "base", name = "item")
 @Entity
-@Builder
+@SuperBuilder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
-public class ItemAggregate {
+public class ItemAggregate extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,8 +61,8 @@ public class ItemAggregate {
     @LastModifiedDate
     private LocalDateTime deletedDate;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<ItemStockEntity> items;
+    @OneToOne(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private ItemStockEntity itemStock;
 
     public ItemAggregate create(ItemRepository itemRepository) {
         itemRepository.save(this);
@@ -70,7 +71,6 @@ public class ItemAggregate {
 
     public static final List<ItemAggregate> creates(ItemRepository itemRepository, List<CreateItem> createItems) {
         Assert.notEmpty(createItems, "createItems is null");
-
         final var items = createItems.stream()
                 .map(createItem -> ItemAggregate.builder()
                         .build()
@@ -95,11 +95,11 @@ public class ItemAggregate {
 
     public ItemAggregate addItem(ItemStockEntity itemStockEntity){
         Assert.notNull(itemStockEntity, "itemStock is null");
-        if(this.getItems() == null) {
-            this.items = new ArrayList<>();
+        if(this.getItemStock() == null) {
+            this.itemStock = new ItemStockEntity();
         }
         itemStockEntity.putItem(this);
-        this.items.add(itemStockEntity);
+        this.getItemStock();
         return this;
     }
 }

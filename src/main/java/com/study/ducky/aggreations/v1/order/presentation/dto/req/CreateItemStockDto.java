@@ -17,6 +17,8 @@ import lombok.*;
  */
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateItemStockDto {
     @PositiveOrZero
     private int stockQty;
