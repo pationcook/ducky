@@ -102,7 +102,7 @@ public class OrderController {
         OrderDto orderDto = orderEntityDtoMapper.toDto(orderAggregate);
         // 아이템즈를 재조회하는 이유는 이 지랄을 해야 조회가 됨.
         // => 이유: 객체의 리스트는 초기화 널로 되있고 해당 객체의 리스트는 재정의가 안되있으므로 직접 뺀다음 셋해주는 작업이 들어가야함.
-        // 허나 위처럼 mapstruct를 만들어서 사용하는 방법이 추천됨.
+        // => 개선: 위처럼 mapstruct를 만들어서 사용하는 방법이 추천됨.
 //        final List<OrderItemDto> itemDtos = items.stream().map(item ->
 //                OrderItemDto.builder()
 //                        .id(item.getId())
@@ -132,7 +132,7 @@ public class OrderController {
         return orderDto;
     }
 
-    
+
 
     private OrderAggregate getOrderAggregate(long id) {
         return orderService.get(id);
