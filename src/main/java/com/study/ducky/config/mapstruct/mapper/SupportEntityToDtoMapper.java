@@ -24,6 +24,6 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface SupportEntityToDtoMapper <E extends BaseEntity, D extends BaseDto> extends MapstructConfig {
-    E toEntity(D d);
+//    E toEntity(D d);
     D toDto(E e);
 }

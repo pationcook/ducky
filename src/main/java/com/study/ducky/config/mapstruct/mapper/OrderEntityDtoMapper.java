@@ -17,7 +17,7 @@ import java.util.List;
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
+ * --------------------------------------------  ---------------
  * 2023-09-16           patio            최초 생성
  */
 @Mapper(componentModel = "spring" , nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
@@ -25,7 +25,7 @@ public interface OrderEntityDtoMapper extends SupportEntityToDtoMapper<OrderAggr
 
     // 빌드시 조건을 추가해주기 위한 어노테이션
     @Condition
-    default boolean isLazyLoaded(List<OrderAggregate> entities) {
+    default boolean isLazyLoaded(List<OrderAggregate> entities) { 
         return isLoaded(entities);
     }
 }
