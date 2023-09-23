@@ -4,6 +4,7 @@ import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
 import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
 import com.study.ducky.aggreations.v1.order.enums.OrderStatusEnum;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.OrderRepository;
+import com.study.ducky.aggreations.v1.order.presentation.dto.req.OrderSearchConditions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
@@ -83,4 +84,8 @@ public class OrderService {
         return allByStatus;
     }
 
+    public Page<OrderAggregate> listBySearchCondition(OrderSearchConditions orderSearchConditions, Pageable pageable) {
+        Page<OrderAggregate> allBySearchCondition = orderRepository.findAllByCreatedDateBetweenAndPriceIsGreaterThan(orderSearchConditions.getStartDate(),orderSearchConditions.getEndDate(), orderSearchConditions.getPrice(), pageable);
+        return allBySearchCondition;
+    }
 }
