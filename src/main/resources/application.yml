@@ -38,3 +38,7 @@ logging:
       hibernate:
         orm.jdbc.bind: trace # hibernate core 6.x
         #type.descriptor.sql.BasicBinder: trace # hibernate core 5.x
+
+jwt:
+  access-token:
+    key: spring-boot-base-study-auth

@@ -24,8 +24,8 @@ import java.util.List;
 public interface OrderEntityDtoMapper extends SupportEntityToDtoMapper<OrderAggregate, OrderDto> {
 
     // 빌드시 조건을 추가해주기 위한 어노테이션
-    @Condition
-    default boolean isLazyLoaded(List<OrderAggregate> entities) { 
-        return isLoaded(entities);
-    }
+//    @Condition
+//    default boolean isLazyLoaded(List<OrderAggregate> entities) {
+//        return isLoaded(entities);
+//    }
 }

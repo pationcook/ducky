@@ -92,4 +92,12 @@ public class OrderAggregate extends BaseEntity {
         this.orderItems.add(orderItem);
         return this;
     }
+
+    public void changeOrder(){
+        this.status = OrderStatusEnum.ORDER;
+    }
+
+    public void changeOrderCanceled(){
+        this.status = OrderStatusEnum.CANCELED;
+    }
 }

@@ -33,7 +33,6 @@ public class CreateOrdersDto {
     @Valid
     private List<CreateOrderDto> orders;
 
-
     @JsonCreator
     public CreateOrdersDto(@JsonProperty("orders") List<CreateOrderDto> orders) {
         this.orders = orders;

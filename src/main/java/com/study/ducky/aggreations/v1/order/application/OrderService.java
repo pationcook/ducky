@@ -1,9 +1,11 @@
 package com.study.ducky.aggreations.v1.order.application;
 
 import com.study.ducky.aggreations.v1.order.application.dto.req.CreateOrder;
+import com.study.ducky.aggreations.v1.order.application.dto.req.GetOrder;
 import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
 import com.study.ducky.aggreations.v1.order.enums.OrderStatusEnum;
 import com.study.ducky.aggreations.v1.order.infrastructure.repository.OrderRepository;
+import com.study.ducky.aggreations.v1.order.infrastructure.repository.dto.req.OrderCondition;
 import com.study.ducky.aggreations.v1.order.presentation.dto.req.OrderSearchConditions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +76,6 @@ public class OrderService {
      * DB가 write 용이 존재할 때, 성능적으로 이점이 있다.
      * Transactional은 event 전파와 같이 전파되므로 상위 transaction이 존재하면 무시된다.
      * 무시되지 않을 방법은 propagation 을 이용하는 것이다.
-     *
      * @param orderStatusEnum
      * @return
      */
@@ -87,5 +88,34 @@ public class OrderService {
     public Page<OrderAggregate> listBySearchCondition(OrderSearchConditions orderSearchConditions, Pageable pageable) {
         Page<OrderAggregate> allBySearchCondition = orderRepository.findAllByCreatedDateBetweenAndPriceIsGreaterThan(orderSearchConditions.getStartDate(),orderSearchConditions.getEndDate(), orderSearchConditions.getPrice(), pageable);
         return allBySearchCondition;
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<OrderAggregate> list(GetOrder requset) {
+        final OrderCondition condition = requset.toCondition();
+        Page<OrderAggregate> pageOrders = orderRepository.getOrders(
+                condition
+        );
+        return pageOrders;
+    }
+
+    @Transactional
+    public void changeStatus(long id, OrderStatusEnum status){
+        orderRepository.changeStatus(id,status);
+    };
+
+    @Transactional
+    public void changeToCanceled(Long id){
+        final var orderOptional = orderRepository.findById(id);
+        orderOptional.ifPresent(OrderAggregate::changeOrderCanceled);
+    }
+
+    @Transactional
+    public void changeToOrder(Long id){
+        final var orderOptional = orderRepository.findById(id);
+        orderOptional.ifPresent(order -> {
+            order.changeOrder();
+        });
     }
 }

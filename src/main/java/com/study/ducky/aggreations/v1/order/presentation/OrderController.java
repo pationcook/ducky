@@ -6,9 +6,11 @@ import com.study.ducky.aggreations.v1.order.domain.OrderAggregate;
 import com.study.ducky.aggreations.v1.order.domain.OrderItemEntity;
 import com.study.ducky.aggreations.v1.order.enums.OrderStatusEnum;
 import com.study.ducky.aggreations.v1.order.presentation.dto.req.CreateOrdersDto;
+import com.study.ducky.aggreations.v1.order.presentation.dto.req.GetOrderDto;
 import com.study.ducky.aggreations.v1.order.presentation.dto.req.OrderSearchConditions;
 import com.study.ducky.aggreations.v1.order.presentation.dto.res.OrderDto;
 import com.study.ducky.config.annotations.*;
+import com.study.ducky.config.controller.SuperController;
 import com.study.ducky.config.mapstruct.mapper.OrderEntityDtoMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -44,7 +46,7 @@ import java.util.stream.Collectors;
 @RestApi("/v1/orders")
 @RequiredArgsConstructor
 @Slf4j
-public class OrderController {
+public class OrderController extends SuperController {
 
 
     private final OrderService orderService;
@@ -60,7 +62,6 @@ public class OrderController {
     )
     throws ValidationException {
 
-
         OrderSearchConditions orderSearchConditions = OrderSearchConditions.builder()
                 .price(price)
                 .build();
@@ -68,17 +69,23 @@ public class OrderController {
         orderSearchConditions.dateInitValidation(startDate, endDate);
         orderSearchConditions.dateValidation();
         orderSearchConditions.priceValidation();
-
-
         Page<OrderAggregate> pageOrders = orderService
                 .listBySearchCondition(orderSearchConditions, pageable);
-
-
         List<OrderAggregate> orders = pageOrders.getContent();
         List<OrderDto> orderDtos  = orders.stream()
                 .map(order -> orderEntityDtoMapper.toDto(order))
                 .collect(Collectors.toList());
         return new PageImpl<>(orderDtos, pageable, pageOrders.getTotalElements());
+    }
+
+    @Get
+    public Page<OrderDto> getOrders(
+            GetOrderDto request
+           ,@PageableDefault(size= 10, sort="id", direction=Sort.Direction.DESC) Pageable pageable
+    ) {
+        request.toGetOrder(pageable);
+        Page<OrderAggregate> list = orderService.list(request.toGetOrder(pageable));
+        return response(orderEntityDtoMapper, list, pageable);
     }
 
     @Get("/status/{status}")
@@ -93,6 +100,14 @@ public class OrderController {
                 .map(order -> orderEntityDtoMapper.toDto(order))
                 .collect(Collectors.toList());
         return new PageImpl<>(orderDtos, pageable, pageOrders.getTotalElements());
+    }
+
+    @Patch("/{id}/status/{status}")
+    public void changeOrderStatus(
+            @PathVariable Long id,
+            @PathVariable OrderStatusEnum status
+    ){
+        orderService.changeStatus(id,status);
     }
 
 
